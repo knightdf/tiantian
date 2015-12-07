@@ -1,3 +1,3 @@
-__all__ = ['log']
+__all__ = ['Logger']
 
-from logger import Logger as log
+from application.log.logger import Logger

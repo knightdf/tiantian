@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from wechat import Wechat
-from log import log
+from application.wechat import Wechat
+from application.log.logger import Logger as log
 from wechat_sdk.exceptions import *
 from wechat_sdk.messages import *

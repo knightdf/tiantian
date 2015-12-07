@@ -3,7 +3,7 @@ import logging
 import logging.config
 
 
-logging.config.fileConfig('log/logger.conf')
+logging.config.fileConfig('application/log/logger.conf')
 log1 = logging.getLogger('wechat')
 
 class Logger(object):
