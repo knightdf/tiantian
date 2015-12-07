@@ -1,8 +1,8 @@
 # coding=utf-8
 
 from flask import (make_response, render_template, Response)
-from application.wechat import Wechat
-from application.log.logger import Logger as log
+from wechat import Wechat
+from log.logger import log
 from wechat_sdk.exceptions import *
 from wechat_sdk.messages import *
 

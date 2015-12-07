@@ -1,8 +1,8 @@
 # coding=utf-8
 
 from wechat_sdk import (WechatBasic, WechatExt)
-from application.log.logger import Logger as log
-import application.config as config
+from log.logger import log
+import config as config
 import fcntl
 import os
 import json

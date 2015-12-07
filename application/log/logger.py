@@ -1,21 +1,45 @@
 # coding=utf-8
+
 import logging
-import logging.config
+from logging.handlers import SMTPHandler
+from handlers import MultiProcessTimedRotatingFileHandler
+import sys
+sys.path.append('..')
+import config as config
 
 
-logging.config.fileConfig('application/log/logger.conf')
-log1 = logging.getLogger('wechat')
+_Levels = {
+    'DEBUG': logging.DEBUG,
+    'INFO': logging.INFO,
+    'WARN': logging.WARN,
+    'WARNING': logging.WARNING,
+    'ERROR': logging.ERROR,
+    'CRITICAL': logging.CRITICAL
+    }
 
-class Logger(object):
+log = logging.getLogger('wechat')
+log.setLevel(_Levels.get(str.upper(config.LogLevel or ''), logging.NOTSET))
+log.propagate = False
 
-    @staticmethod
-    def debug(msg, name=None):
-        log1.debug(msg)
+__h1 = MultiProcessTimedRotatingFileHandler(config.LogPath or 'wechat.log', 'midnight')
+__h1.setLevel(logging.DEBUG)
 
-    @staticmethod
-    def log(msg, name=None):
-        log1.info(msg)
+__f = logging.Formatter('%(asctime)s [%(name)s] %(levelname)s: %(message)s')
+__h1.setFormatter(__f)
 
-    @staticmethod
-    def error(msg, name=None):
-        log1.error(msg)
+if config.MailNotifyEnable:
+    __h2 = SMTPHandler(config.MailHost, config.MailFrom, config.MailTo,\
+            'New Critical Event From [WeChat: TianTian]', (config.MailFrom, config.MailPass))
+    __h2.setLevel(logging.CRITICAL)
+    __h2.setFormatter(__f)
+    log.addHandler(__h2)
+
+log.addHandler(__h1)
+
+
+if __name__ == '__main__':
+    log.debug('debug message')
+    log.info('info message')
+    log.warn('warn message')
+    log.error('error message')
+    log.critical('critical message')

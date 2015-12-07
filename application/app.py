@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from flask import (Flask, request, make_response, render_template, Response)
-from application.handler import *
+from handler import *
 
 
 app = Flask(__name__.split('.')[0])
