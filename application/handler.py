@@ -3,6 +3,7 @@
 from flask import (make_response, render_template, Response)
 from wechat import Wechat
 from log.logger import log
+from ext.robots import TuringRobot
 from wechat_sdk.exceptions import *
 from wechat_sdk.messages import *
 import config
@@ -12,36 +13,16 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
+_robot = TuringRobot(config.TuringRobotKey)
+
 def turing_robot(msg, userid=None, location=None, longitude=None, latitude=None):
     """Turing Robot"""
 
-    def check_error(resp):
-        _Error = {
-                '40002': u'说点什么吧',
-                '40004': u'今天太累了，要休息下了。明天再来跟我聊天吧^ ^',
-                '40005': u'这个我也不知道耶...囧',
-                '40006': u'我出去锻炼啦，等一下回来噢0 0',
-                '40007': u'(⊙o⊙)…您说的我没听懂耶'
-                }
-        return _Error.get(str(resp.get('code')))
-
-    response = util.get(
-            'http://www.tuling123.com/openapi/api',
-            params={
-                'key': config.TuringRobotKey,
-                'info': msg,
-                'userid': userid,
-                'loc': location,
-                'lon': longitude,
-                'lat': latitude}
-            )
-    err_msg = check_error(response)
-    if err_msg:
-        log.error('Turing Robot Error, Code: %s'%str(response.get('code')))
-        return err_msg
-    return response.get('text')
+    return _robot.answer(msg, userid, location, longitude, latitude)
 
 def check_signature(request):
+    """handle wechat server check"""
+
     args = request.args
     signature = args.get('signature')
     timestamp = args.get('timestamp')
@@ -52,6 +33,8 @@ def check_signature(request):
     return Response(status=204)
 
 def handle_client(request):
+    """handle wechat event and client message"""
+
     wechat = Wechat()
     args = request.args
     # check request signature
