@@ -5,7 +5,41 @@ from wechat import Wechat
 from log.logger import log
 from wechat_sdk.exceptions import *
 from wechat_sdk.messages import *
+import config
+import util
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
+
+def turing_robot(msg, userid=None, location=None, longitude=None, latitude=None):
+    """Turing Robot"""
+
+    def check_error(resp):
+        _Error = {
+                '40002': u'说点什么吧',
+                '40004': u'今天太累了，要休息下了。明天再来跟我聊天吧^ ^',
+                '40005': u'这个我也不知道耶...囧',
+                '40006': u'我出去锻炼啦，等一下回来噢0 0',
+                '40007': u'(⊙o⊙)…您说的我没听懂耶'
+                }
+        return _Error.get(str(resp.get('code')))
+
+    response = util.get(
+            'http://www.tuling123.com/openapi/api',
+            params={
+                'key': config.TuringRobotKey,
+                'info': msg,
+                'userid': userid,
+                'loc': location,
+                'lon': longitude,
+                'lat': latitude}
+            )
+    err_msg = check_error(response)
+    if err_msg:
+        log.error('Turing Robot Error, Code: %s'%str(response.get('code')))
+        return err_msg
+    return response.get('text')
 
 def check_signature(request):
     args = request.args
@@ -33,7 +67,7 @@ def handle_client(request):
     response = None
     # normal message
     if isinstance(message, TextMessage):
-        response = wechat.response_text(content=u'文字信息')
+        response = wechat.response_text(content=turing_robot(message.content, message.source))
     elif isinstance(message, VoiceMessage):
         response = wechat.response_text(content=u'语音信息')
     elif isinstance(message, ImageMessage):

@@ -3,9 +3,7 @@
 import logging
 from logging.handlers import SMTPHandler
 from handlers import MultiProcessTimedRotatingFileHandler
-import sys
-sys.path.append('..')
-import config as config
+from application import config
 
 
 _Levels = {

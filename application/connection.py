@@ -3,7 +3,7 @@
 
 import redis
 import MySQLdb
-import config as config
+import config
 
 # default values
 DEFAULT_REDIS_IP = '127.0.0.1'
@@ -55,6 +55,3 @@ class MysqlCache(object):
 
     def get_connection(self):
         return self._conn
-
-    def close(self):
-        self._conn.close()

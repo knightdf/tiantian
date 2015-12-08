@@ -2,7 +2,7 @@
 
 from wechat_sdk import (WechatBasic, WechatExt)
 from log.logger import log
-import config as config
+import config
 import fcntl
 import os
 import json

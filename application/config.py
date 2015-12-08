@@ -20,6 +20,8 @@ EncodingAESKey = ""
 AppID = ""
 AppSecret = ""
 
+# Turing Robot
+TuringRobotKey = "3b41482640b3ababc622e7ff71da5c9e"
 
 ################### Logging Config ###################
 LogPath = "/yundisk/log/wechat/wechat.log"
