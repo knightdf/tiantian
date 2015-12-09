@@ -46,8 +46,10 @@ def handle_client(request):
         log.error('Parse post data error, data: %s'%str(request.data))
         return ''
 
+    log.debug('Request: %s'%str(request.data))
+
     message = wechat.get_message()
-    response = None
+    response = ''
     # normal message
     if isinstance(message, TextMessage):
         response = wechat.response_text(content=turing_robot(message.content, message.source))
@@ -82,5 +84,10 @@ def handle_client(request):
             response = wechat.response_text(content=u'自定义菜单跳转链接事件')
         elif message.type == 'templatesendjobfinish':
             response = wechat.response_text(content=u'模板消息事件')
+
+    if isinstance(response, unicode):
+        response = response.encode('utf-8')
+
+    log.debug('Response: %s'%response)
 
     return make_response(response)

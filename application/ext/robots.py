@@ -33,9 +33,9 @@ class TuringRobot(object):
         self._key = key
 
     def answer(self, message, userid=None, location=None, longitude=None, latitude=None):
-        response = util.get(
+        response = util.post(
                 'http://www.tuling123.com/openapi/api',
-                params={
+                data={
                     'key': self._key,
                     'info': message,
                     'userid': userid,
@@ -61,45 +61,27 @@ class TuringRobot(object):
         if self._Code.get(code) == 'text':
             return resp.get('text')
         elif self._Code.get(code) == 'link':
-            return u"""%(text)s: \n%(url)s""" % resp
+            return u"%(text)s: \n%(url)s" % resp
         elif self._Code.get(code) == 'news':
             news = []
             for item in resp.get('list', []):
-                news.append(u"""
-                        标题: %(article)s\n
-                        来源: %(source)s\n
-                        阅读原文: %(detailurl)s
-                        """ % item)
-            return u"""%(text)s: \n"""%resp + u"\n---\n".join(news)
+                news.append(u"标题: %(article)s\n来源: %(source)s\n阅读原文: %(detailurl)s" % item)
+            return u"%(text)s: \n" % resp + u'\n---\n'.join(news)
         elif self._Code.get(code) == 'train':
             trains = []
             for train in resp.get('list', []):
-                trains.append(u"""
-                        车次: %(trainnum)s\n
-                        出发站: %(start)s\n
-                        到达站: %(terminal)s\n
-                        开车时间: %(starttime)s\n
-                        到达时间: %(endtime)s\n
-                        详情: %(detailurl)s
-                        """ % train)
-            return u"""%(text)s: \n"""%resp + u"\n---\n".join(trains)
+                trains.append(u"车次: %(trainnum)s\n出发站: %(start)s\n到达站: %(terminal)s\
+                        \n开车时间: %(starttime)s\n到达时间: %(endtime)s\n详情: %(detailurl)s" % train)
+            return u"%(text)s: \n" % resp + u'\n---\n'.join(trains)
         elif self._Code.get(code) == 'flight':
             flights = []
             for flight in resp.get('list', []):
-                flights.append(u"""
-                        航班号: %(flight)s\n
-                        起飞时间: %(starttime)s\n
-                        到达时间: %(endtime)s
-                """ % flight)
-            return u"""%(text)s: \n"""%resp + u"\n---\n".join(flights)
+                flights.append(u"航班号: %(flight)s\n起飞时间: %(starttime)s\n到达时间: %(endtime)s" % flight)
+            return u"%(text)s: \n" % resp + u'\n---\n'.join(flights)
         elif self._Code.get(code) == 'cookbook':
             cookbooks = []
             for cookbook in resp.get('list', []):
-                cookbook.append(u"""
-                        菜名: %(name)s\n
-                        菜谱: %(info)s\n
-                        详情: %(detailurl)s
-                """ % cookbook)
-            return u"""%(text)s: \n"""%resp + u"\n---\n".join(cookbooks)
+                cookbooks.append(u"菜名: %(name)s\n菜谱: %(info)s\n详情: %(detailurl)s" % cookbook)
+            return u"%(text)s: \n" % resp + u'\n---\n'.join(cookbooks)
         else:
             return resp.get('text')
